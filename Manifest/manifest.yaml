@@ -1,8 +1,8 @@
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: petclinic
-  namespace: webapps
 spec:
   type: NodePort
   ports:
@@ -16,7 +16,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: petclinic
-  namespace: webapps
   labels:
     app: petclinic
 spec:
@@ -31,16 +30,17 @@ spec:
     spec:
       containers:
         - name: workload
-          image: preshiouso/springpet:v20
+          image: dsyer/petclinic
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: postgres
             - name: SERVICE_BINDING_ROOT
               value: /bindings
-          volumeMounts:
-            - name: binding
-              mountPath: /bindings/secret
-              readOnly: true
+            - name: SPRING_APPLICATION_JSON
+              value: |
+                {
+                  "management.endpoint.health.probes.add-additional-paths": true
+                }
           ports:
             - name: http
               containerPort: 8080
@@ -52,13 +52,10 @@ spec:
             httpGet:
               path: /readyz
               port: http
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "250m"
-            limits:
-              memory: "1024Mi"
-              cpu: "500m"
+          volumeMounts:
+            - mountPath: /bindings/secret
+              name: binding
+              readOnly: true
       volumes:
         - name: binding
           projected:
