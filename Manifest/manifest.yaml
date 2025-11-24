@@ -39,7 +39,8 @@ spec:
             - name: SPRING_APPLICATION_JSON
               value: |
                 {
-                  "management.endpoint.health.probes.add-additional-paths": true
+                  "management.endpoint.health.probes.enabled": true,
+                  "management.endpoints.web.exposure.include": "health"
                 }
           ports:
             - name: http
@@ -50,12 +51,16 @@ spec:
               readOnly: true
           livenessProbe:
             httpGet:
-              path: /livez
+              path: /actuator/health/liveness
               port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /readyz
+              path: /actuator/health/readiness
               port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
           resources:
             requests:
               memory: "512Mi"
