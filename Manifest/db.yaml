@@ -5,12 +5,12 @@ metadata:
   namespace: webapps
 type: Opaque
 stringData:
-  username: "user"
-  password: "pass"
-  database: "petclinic"
   type: postgresql
   host: demo-db
   port: "5432"
+  username: "user"
+  password: "pass"
+  database: "petclinic"
   uri: "postgresql://user:pass@demo-db:5432/petclinic"
 
 ---
@@ -18,17 +18,20 @@ apiVersion: v1
 kind: Service
 metadata:
   name: demo-db
+  namespace: webapps
 spec:
   ports:
     - port: 5432
   selector:
     app: demo-db
+  type: ClusterIP
 
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-db
+  namespace: webapps
   labels:
     app: demo-db
 spec:
