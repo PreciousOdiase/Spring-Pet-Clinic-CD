@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: workload
-          image: preshiouso/springpet:v13
+          image: preshiouso/springpet:v19
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: postgres
