@@ -1,13 +1,17 @@
----
 apiVersion: v1
 kind: Secret
 metadata:
   name: demo-db
+  namespace: webapps
 type: Opaque
 stringData:
   username: "user"
   password: "pass"
   database: "petclinic"
+  type: postgresql
+  host: demo-db
+  port: "5432"
+  uri: "postgresql://user:pass@demo-db:5432/petclinic"
 
 ---
 apiVersion: v1
