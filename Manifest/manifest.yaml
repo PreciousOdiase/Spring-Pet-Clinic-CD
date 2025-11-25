@@ -22,19 +22,44 @@ spec:
               name: http
           livenessProbe:
             httpGet:
-              path: /livez
-              port: http
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
           readinessProbe:
             httpGet:
-              path: /readyz
-              port: http
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 40
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
           resources:
             requests:
-              memory: "512Mi"
-              cpu: "250m"
-            limits:
-              memory: "1024Mi"
+              memory: "1Gi"
               cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "500m"
+          env:
+            - name: POSTGRES_URL
+              value: jdbc:postgresql://demo-db:5432/petclinic
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: demo-db
+                  key: username
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: demo-db
+                  key: password
+            - name: SPRING_PROFILES_ACTIVE
+              value: postgres
 
 ---
 apiVersion: v1
